@@ -78,7 +78,7 @@ export function AnimalMarker({ animal }: AnimalMarkerProps) {
       <Popup className="animal-popup">
         <div className="min-w-48 p-1">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-foreground">{animal.name}</h3>
+            <h3 className="font-semibold text-white">{animal.name}</h3>
             <span className={`text-xs px-2 py-0.5 rounded-full ${
               animal.status === 'online' ? 'bg-green-500/20 text-green-400' :
               animal.status === 'alert' ? 'bg-red-500/20 text-red-400' :
@@ -88,22 +88,22 @@ export function AnimalMarker({ animal }: AnimalMarkerProps) {
             </span>
           </div>
           
-          <div className="space-y-1 text-sm text-muted-foreground">
+          <div className="space-y-1 text-sm text-zinc-400">
             <p className="flex items-center gap-2">
-              <span className="text-muted-foreground">ID:</span>
-              <span className="text-foreground">{animal.trackerId}</span>
+              <span className="text-zinc-400">ID:</span>
+              <span className="text-white">{animal.trackerId}</span>
             </p>
             <p className="flex items-center gap-2">
               <Battery className="h-3.5 w-3.5" />
-              <span className="text-foreground">{animal.batteryLevel}%</span>
+              <span className="text-white">{animal.batteryLevel}%</span>
             </p>
             <p className="flex items-center gap-2">
               <Clock className="h-3.5 w-3.5" />
-              <span className="text-foreground">{formatLastSeen(animal.lastSeen)}</span>
+              <span className="text-white">{formatLastSeen(animal.lastSeen)}</span>
             </p>
           </div>
           
-          <div className="mt-3 pt-2 border-t border-border">
+          <div className="mt-3 pt-2 border-t border-zinc-700">
             <Button 
               variant="destructive" 
               size="sm" 
