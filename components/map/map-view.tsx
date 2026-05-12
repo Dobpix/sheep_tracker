@@ -7,7 +7,7 @@ import { AnimalMarker } from './animal-marker'
 import { ZoneLayer } from './zone-layer'
 import { DrawingLayer } from './drawing-layer'
 import { MAP_CENTER } from '@/lib/data/mock-data'
-import 'leaflet/dist/leaflet.css'
+// Leaflet CSS imported in globals.css
 
 function MapController() {
   const { mapCenter, selectedAnimalId, animals } = useApp()

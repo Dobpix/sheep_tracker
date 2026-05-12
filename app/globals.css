@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'leaflet/dist/leaflet.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -124,42 +125,57 @@
   }
 }
 
-/* Leaflet popup styles */
+/* Leaflet popup styles - must come after leaflet.css import */
+.leaflet-container .leaflet-popup-content-wrapper,
 .leaflet-popup-content-wrapper {
-  background: oklch(0.205 0 0) !important;
-  border: 1px solid oklch(0.269 0 0) !important;
+  background: #1c1c1c !important;
+  background-color: #1c1c1c !important;
+  border: 1px solid #333 !important;
   border-radius: 0.5rem !important;
-  padding: 0.5rem !important;
+  padding: 0 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  color: #f5f5f5 !important;
 }
 
+.leaflet-container .leaflet-popup-content,
 .leaflet-popup-content {
   margin: 0 !important;
-  color: oklch(0.985 0 0) !important;
+  color: #f5f5f5 !important;
 }
 
+.leaflet-container .leaflet-popup-content p,
+.leaflet-container .leaflet-popup-content h3,
+.leaflet-container .leaflet-popup-content span,
+.leaflet-container .leaflet-popup-content div,
 .leaflet-popup-content p,
 .leaflet-popup-content h3,
-.leaflet-popup-content span {
-  color: oklch(0.985 0 0);
+.leaflet-popup-content span,
+.leaflet-popup-content div {
+  color: #f5f5f5 !important;
 }
 
-.leaflet-popup-content .text-muted-foreground {
-  color: oklch(0.708 0 0) !important;
+.leaflet-container .leaflet-popup-content .text-zinc-400,
+.leaflet-popup-content .text-zinc-400 {
+  color: #a1a1aa !important;
 }
 
+.leaflet-container .leaflet-popup-tip-container .leaflet-popup-tip,
 .leaflet-popup-tip {
-  background: oklch(0.205 0 0) !important;
+  background: #1c1c1c !important;
+  background-color: #1c1c1c !important;
   border: none !important;
   box-shadow: none !important;
 }
 
+.leaflet-container .leaflet-popup-close-button,
 .leaflet-popup-close-button {
-  color: oklch(0.708 0 0) !important;
+  color: #a1a1aa !important;
 }
 
+.leaflet-container .leaflet-popup-close-button:hover,
 .leaflet-popup-close-button:hover {
-  color: oklch(0.985 0 0) !important;
+  color: #f5f5f5 !important;
+  background: transparent !important;
 }
 
 .leaflet-container {
