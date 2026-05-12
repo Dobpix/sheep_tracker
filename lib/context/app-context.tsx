@@ -4,6 +4,8 @@ import { createContext, useContext, useState, ReactNode } from 'react'
 import type { Animal, Zone, Notification, Coordinates } from '@/lib/types'
 import { mockAnimals, mockZones, mockNotifications, MAP_CENTER } from '@/lib/data/mock-data'
 
+type MapType = 'satellite' | 'streets'
+
 interface AppState {
   animals: Animal[]
   zones: Zone[]
@@ -12,6 +14,7 @@ interface AppState {
   isDrawingZone: boolean
   drawingCoordinates: Coordinates[]
   mapCenter: Coordinates
+  mapType: MapType
 }
 
 interface AppContextType extends AppState {
@@ -28,6 +31,7 @@ interface AppContextType extends AppState {
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void
   markNotificationRead: (id: string) => void
   setMapCenter: (center: Coordinates) => void
+  setMapType: (type: MapType) => void
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -40,8 +44,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isDrawingZone, setIsDrawingZone] = useState(false)
   const [drawingCoordinates, setDrawingCoordinates] = useState<Coordinates[]>([])
   const [mapCenter, setMapCenter] = useState<Coordinates>(MAP_CENTER)
+  const [mapType, setMapType] = useState<MapType>('satellite')
 
   const addAnimal = (animal: Omit<Animal, 'id' | 'history' | 'lastSeen'>) => {
+    console.log('[v0] Adding animal:', animal)
     const newAnimal: Animal = {
       ...animal,
       id: `animal-${Date.now()}`,
@@ -49,6 +55,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       lastSeen: new Date()
     }
     setAnimals(prev => [...prev, newAnimal])
+    console.log('[v0] Animal added successfully:', newAnimal.id)
     return newAnimal
   }
 
@@ -86,7 +93,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   const addDrawingPoint = (coord: Coordinates) => {
-    setDrawingCoordinates(prev => [...prev, coord])
+    console.log('[v0] Adding drawing point:', coord)
+    setDrawingCoordinates(prev => {
+      const newCoords = [...prev, coord]
+      console.log('[v0] Drawing coordinates now:', newCoords.length)
+      return newCoords
+    })
   }
 
   const finishDrawingZone = () => {
@@ -126,6 +138,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       isDrawingZone,
       drawingCoordinates,
       mapCenter,
+      mapType,
       setSelectedAnimalId,
       addAnimal,
       removeAnimal,
@@ -138,7 +151,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cancelDrawingZone,
       addNotification,
       markNotificationRead,
-      setMapCenter
+      setMapCenter,
+      setMapType
     }}>
       {children}
     </AppContext.Provider>

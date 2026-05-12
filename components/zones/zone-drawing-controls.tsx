@@ -35,6 +35,8 @@ export function ZoneDrawingControls() {
   const [zoneName, setZoneName] = useState('')
   const [selectedColor, setSelectedColor] = useState(ZONE_COLORS[0])
 
+  console.log('[v0] ZoneDrawingControls render, isDrawingZone:', isDrawingZone, 'points:', drawingCoordinates.length)
+
   if (!isDrawingZone) return null
 
   const handleFinish = () => {

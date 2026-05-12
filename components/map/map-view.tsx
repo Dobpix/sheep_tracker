@@ -34,13 +34,21 @@ function MapController() {
 }
 
 export function MapView() {
-  const { animals, zones, isDrawingZone, drawingCoordinates, addDrawingPoint } = useApp()
+  const { animals, zones, isDrawingZone, drawingCoordinates, addDrawingPoint, mapType } = useApp()
 
   const handleMapClick = (e: { latlng: { lat: number; lng: number } }) => {
+    console.log('[v0] Map clicked, isDrawingZone:', isDrawingZone)
     if (isDrawingZone) {
+      console.log('[v0] Adding point:', e.latlng)
       addDrawingPoint({ lat: e.latlng.lat, lng: e.latlng.lng })
     }
   }
+
+  const tileUrl = mapType === 'satellite' 
+    ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+  const attribution = mapType === 'satellite' ? '&copy; Esri' : '&copy; OpenStreetMap'
 
   return (
     <MapContainer
@@ -50,8 +58,9 @@ export function MapView() {
       style={{ background: '#1a1a1a' }}
     >
       <TileLayer
-        attribution='&copy; Esri'
-        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        key={mapType}
+        attribution={attribution}
+        url={tileUrl}
       />
       
       <MapController />

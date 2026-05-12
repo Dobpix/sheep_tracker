@@ -28,12 +28,18 @@ export function AddAnimalDialog({ children }: AddAnimalDialogProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!name.trim() || !trackerId.trim()) return
+    console.log('[v0] handleSubmit called, name:', name, 'trackerId:', trackerId)
+    
+    if (!name.trim() || !trackerId.trim()) {
+      console.log('[v0] Validation failed')
+      return
+    }
     
     // Создаём животное с случайными координатами около центра
     const offsetLat = (Math.random() - 0.5) * 0.008
     const offsetLng = (Math.random() - 0.5) * 0.008
     
+    console.log('[v0] Calling addAnimal')
     addAnimal({
       name: name.trim(),
       trackerId: trackerId.trim().toUpperCase(),
@@ -45,6 +51,7 @@ export function AddAnimalDialog({ children }: AddAnimalDialogProps) {
       batteryLevel: Math.floor(Math.random() * 40) + 60
     })
     
+    console.log('[v0] Animal added, closing dialog')
     setName('')
     setTrackerId('')
     setOpen(false)
