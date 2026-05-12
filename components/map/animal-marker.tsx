@@ -1,11 +1,9 @@
 'use client'
 
-import { Marker, Popup } from 'react-leaflet'
+import { Marker } from 'react-leaflet'
 import L from 'leaflet'
 import type { Animal } from '@/lib/types'
 import { useApp } from '@/lib/context/app-context'
-import { Button } from '@/components/ui/button'
-import { Trash2, Battery, Clock } from 'lucide-react'
 
 interface AnimalMarkerProps {
   animal: Animal
@@ -47,25 +45,7 @@ const createMarkerIcon = (status: Animal['status']) => {
 }
 
 export function AnimalMarker({ animal }: AnimalMarkerProps) {
-  const { setSelectedAnimalId, removeAnimal } = useApp()
-
-  const formatLastSeen = (date: Date) => {
-    const now = new Date()
-    const diff = now.getTime() - date.getTime()
-    const minutes = Math.floor(diff / 60000)
-    
-    if (minutes < 1) return 'Только что'
-    if (minutes < 60) return `${minutes} мин. назад`
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours} ч. назад`
-    return `${Math.floor(hours / 24)} дн. назад`
-  }
-
-  const statusLabels = {
-    online: 'Онлайн',
-    offline: 'Оффлайн',
-    alert: 'Тревога'
-  }
+  const { setSelectedAnimalId } = useApp()
 
   return (
     <Marker
@@ -74,48 +54,6 @@ export function AnimalMarker({ animal }: AnimalMarkerProps) {
       eventHandlers={{
         click: () => setSelectedAnimalId(animal.id)
       }}
-    >
-      <Popup className="animal-popup">
-        <div className="min-w-48 p-1">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-white">{animal.name}</h3>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
-              animal.status === 'online' ? 'bg-green-500/20 text-green-400' :
-              animal.status === 'alert' ? 'bg-red-500/20 text-red-400' :
-              'bg-zinc-500/20 text-zinc-400'
-            }`}>
-              {statusLabels[animal.status]}
-            </span>
-          </div>
-          
-          <div className="space-y-1 text-sm text-zinc-400">
-            <p className="flex items-center gap-2">
-              <span className="text-zinc-400">ID:</span>
-              <span className="text-white">{animal.trackerId}</span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Battery className="h-3.5 w-3.5" />
-              <span className="text-white">{animal.batteryLevel}%</span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Clock className="h-3.5 w-3.5" />
-              <span className="text-white">{formatLastSeen(animal.lastSeen)}</span>
-            </p>
-          </div>
-          
-          <div className="mt-3 pt-2 border-t border-zinc-700">
-            <Button 
-              variant="destructive" 
-              size="sm" 
-              className="w-full gap-2"
-              onClick={() => removeAnimal(animal.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              Удалить
-            </Button>
-          </div>
-        </div>
-      </Popup>
-    </Marker>
+    />
   )
 }
