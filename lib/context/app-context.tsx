@@ -30,6 +30,7 @@ interface AppContextType extends AppState {
 	cancelDrawingZone: () => void
 	addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void
 	markNotificationRead: (id: string) => void
+	clearNotifications: () => void
 	setMapCenter: (center: Coordinates) => void
 	setMapType: (type: MapType) => void
 }
@@ -155,6 +156,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 		setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)))
 	}, [])
 
+	const clearNotifications = useCallback(() => {
+		setNotifications([])
+	}, [])
+
 	useEffect(() => {
 		try {
 			localStorage.setItem(STORAGE_KEYS.animals, JSON.stringify(animals))
@@ -214,6 +219,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 				cancelDrawingZone,
 				addNotification,
 				markNotificationRead,
+				clearNotifications,
 				setMapCenter: setMapCenterValue,
 				setMapType: setMapTypeValue,
 			}}

@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 export function NotificationsPanel() {
-	const { notifications, markNotificationRead } = useApp()
+	const { notifications, markNotificationRead, clearNotifications } = useApp()
 	const [isOpen, setIsOpen] = useState(false)
 	const [shownNotifications, setShownNotifications] = useState<Set<string>>(new Set())
 
@@ -95,9 +95,24 @@ export function NotificationsPanel() {
 				<Card className='absolute right-4 bottom-20 z-[1200] w-80 border-border bg-background shadow-xl'>
 					<CardHeader className='flex flex-row items-center justify-between pb-2'>
 						<CardTitle className='text-base'>Уведомления</CardTitle>
-						<Button variant='ghost' size='icon' className='h-8 w-8' onClick={() => setIsOpen(false)}>
-							<X className='h-4 w-4' />
-						</Button>
+						<div className='flex items-center gap-2'>
+							{notifications.length > 0 && (
+								<Button
+									variant='ghost'
+									size='sm'
+									className='text-xs'
+									onClick={() => {
+										clearNotifications()
+										setShownNotifications(new Set())
+									}}
+								>
+									Очистить
+								</Button>
+							)}
+							<Button variant='ghost' size='icon' className='h-8 w-8' onClick={() => setIsOpen(false)}>
+								<X className='h-4 w-4' />
+							</Button>
+						</div>
 					</CardHeader>
 					<CardContent className='p-0'>
 						<ScrollArea className='h-64'>
