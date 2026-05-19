@@ -63,20 +63,14 @@ export function ZoneDrawingControls() {
 
   return (
     <>
-      <div className="absolute left-1/2 top-4 z-[1000] -translate-x-1/2">
-        <div className="flex items-center gap-2 rounded-lg bg-card border border-border px-4 py-3 shadow-lg">
+      <div className="absolute left-4 top-4 z-[1100] max-w-[calc(100%-2rem)]">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg bg-card/95 border border-border px-3 py-2.5 shadow-lg backdrop-blur-sm">
           <div className="text-sm">
             <span className="text-muted-foreground">Точек: </span>
             <span className="font-medium text-foreground">{drawingCoordinates.length}</span>
           </div>
           
-          <div className="h-4 w-px bg-border mx-2" />
-          
-          <p className="text-sm text-muted-foreground">
-            Кликайте по карте для добавления точек
-          </p>
-          
-          <div className="h-4 w-px bg-border mx-2" />
+          <div className="h-4 w-px bg-border mx-1" />
           
           <Button
             size="sm"

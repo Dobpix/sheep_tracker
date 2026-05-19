@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
 export function AnimalsList() {
-  const { animals, selectedAnimalId, setSelectedAnimalId, setMapCenter } = useApp()
+  const { animals, selectedAnimalId, setSelectedAnimalId, setMapCenter, removeAnimal } = useApp()
   const [search, setSearch] = useState('')
 
   const filteredAnimals = animals.filter(animal =>
@@ -17,7 +17,9 @@ export function AnimalsList() {
 
   const handleSelectAnimal = (animal: typeof animals[0]) => {
     setSelectedAnimalId(animal.id)
-    setMapCenter(animal.coordinates)
+    if (animal.coordinates) {
+      setMapCenter(animal.coordinates)
+    }
   }
 
   return (
@@ -44,6 +46,7 @@ export function AnimalsList() {
               animal={animal}
               isSelected={selectedAnimalId === animal.id}
               onClick={() => handleSelectAnimal(animal)}
+              onRemove={() => removeAnimal(animal.id)}
             />
           ))
         )}

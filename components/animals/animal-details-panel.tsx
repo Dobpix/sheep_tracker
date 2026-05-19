@@ -4,10 +4,10 @@ import { useApp } from '@/lib/context/app-context'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AnimalStatusBadge } from '@/components/animals/animal-status-badge'
-import { Battery, Clock, MapPin, Activity, X, Route, Zap } from 'lucide-react'
+import { Battery, Clock, MapPin, Activity, X, Route, Zap, Satellite, Trash2 } from 'lucide-react'
 
 export function AnimalDetailsPanel() {
-  const { selectedAnimalId, animals, setSelectedAnimalId, zones } = useApp()
+  const { selectedAnimalId, animals, setSelectedAnimalId, zones, removeAnimal } = useApp()
   
   const animal = animals.find(a => a.id === selectedAnimalId)
   
@@ -40,7 +40,9 @@ export function AnimalDetailsPanel() {
     return inside
   }
 
-  const currentZone = zones.find(z => isPointInZone(animal.coordinates, z.coordinates))
+  const currentZone = animal.coordinates
+    ? zones.find(z => isPointInZone(animal.coordinates!, z.coordinates))
+    : null
 
   // Мок-данные для статистики
   const mockStats = {
@@ -57,14 +59,26 @@ export function AnimalDetailsPanel() {
             <CardTitle className="text-base">{animal.name}</CardTitle>
             <AnimalStatusBadge status={animal.status} />
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-8 w-8"
-            onClick={() => setSelectedAnimalId(null)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button 
+              aria-label={`Удалить ${animal.name}`}
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+              onClick={() => removeAnimal(animal.id)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button 
+              aria-label="Закрыть карточку животного"
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8"
+              onClick={() => setSelectedAnimalId(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground">{animal.trackerId}</p>
       </CardHeader>
@@ -88,6 +102,13 @@ export function AnimalDetailsPanel() {
               <p className="font-medium text-sm">{formatLastSeen(animal.lastSeen)}</p>
             </div>
           </div>
+          <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-2">
+            <Satellite className={`h-4 w-4 ${animal.hasGpsSignal ? 'text-green-500' : 'text-orange-500'}`} />
+            <div>
+              <p className="text-xs text-muted-foreground">GPS</p>
+              <p className="font-medium text-sm">{animal.hasGpsSignal ? `${animal.satellites} спутн.` : 'Нет сигнала'}</p>
+            </div>
+          </div>
         </div>
 
         {/* Зона */}
@@ -96,7 +117,7 @@ export function AnimalDetailsPanel() {
           <div>
             <p className="text-xs text-muted-foreground">Зона</p>
             <p className={`font-medium text-sm ${currentZone ? 'text-green-500' : 'text-yellow-500'}`}>
-              {currentZone ? currentZone.name : 'Вне зоны'}
+              {!animal.coordinates ? 'Координат нет' : currentZone ? currentZone.name : 'Вне зоны'}
             </p>
           </div>
         </div>
@@ -134,7 +155,9 @@ export function AnimalDetailsPanel() {
         {/* Координаты */}
         <div className="border-t border-border pt-3">
           <p className="text-xs text-muted-foreground">
-            Координаты: {animal.coordinates.lat.toFixed(5)}, {animal.coordinates.lng.toFixed(5)}
+            Координаты: {animal.coordinates
+              ? `${animal.coordinates.lat.toFixed(5)}, ${animal.coordinates.lng.toFixed(5)}`
+              : 'нет данных от GPS'}
           </p>
         </div>
       </CardContent>

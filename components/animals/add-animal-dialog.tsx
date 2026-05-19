@@ -13,7 +13,6 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { MAP_CENTER } from '@/lib/data/mock-data'
 
 interface AddAnimalDialogProps {
   children: ReactNode
@@ -35,20 +34,15 @@ export function AddAnimalDialog({ children }: AddAnimalDialogProps) {
       return
     }
     
-    // Создаём животное с случайными координатами около центра
-    const offsetLat = (Math.random() - 0.5) * 0.008
-    const offsetLng = (Math.random() - 0.5) * 0.008
-    
     console.log('[v0] Calling addAnimal')
     addAnimal({
       name: name.trim(),
-      trackerId: trackerId.trim().toUpperCase(),
-      coordinates: {
-        lat: MAP_CENTER.lat + offsetLat,
-        lng: MAP_CENTER.lng + offsetLng
-      },
-      status: 'online',
-      batteryLevel: Math.floor(Math.random() * 40) + 60
+      trackerId: trackerId.trim(),
+      coordinates: null,
+      status: 'offline',
+      batteryLevel: 0,
+      satellites: 0,
+      hasGpsSignal: false
     })
     
     console.log('[v0] Animal added, closing dialog')

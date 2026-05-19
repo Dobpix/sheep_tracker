@@ -47,6 +47,10 @@ const createMarkerIcon = (status: Animal['status']) => {
 export function AnimalMarker({ animal }: AnimalMarkerProps) {
   const { setSelectedAnimalId } = useApp()
 
+  if (!animal.coordinates) {
+    return null
+  }
+
   return (
     <Marker
       position={[animal.coordinates.lat, animal.coordinates.lng]}

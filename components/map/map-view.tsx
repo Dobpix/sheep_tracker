@@ -9,6 +9,35 @@ import { DrawingLayer } from './drawing-layer'
 import { MAP_CENTER } from '@/lib/data/mock-data'
 // Leaflet CSS imported in globals.css
 
+const MAP_LAYERS = {
+  satellite: [
+    {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; Esri',
+    },
+  ],
+  streets: [
+    {
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; OpenStreetMap contributors',
+    },
+  ],
+  hybrid: [
+    {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; Esri',
+    },
+    {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; Esri',
+    },
+    {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; Esri',
+    },
+  ],
+}
+
 function MapController() {
   const { mapCenter, selectedAnimalId, animals } = useApp()
   const map = useMap()
@@ -16,7 +45,7 @@ function MapController() {
   useEffect(() => {
     if (selectedAnimalId) {
       const animal = animals.find(a => a.id === selectedAnimalId)
-      if (animal) {
+      if (animal?.coordinates) {
         map.flyTo([animal.coordinates.lat, animal.coordinates.lng], 16, {
           duration: 0.8
         })
@@ -44,11 +73,7 @@ export function MapView() {
     }
   }
 
-  const tileUrl = mapType === 'satellite' 
-    ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-    : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-
-  const attribution = mapType === 'satellite' ? '&copy; Esri' : '&copy; OpenStreetMap'
+  const layers = MAP_LAYERS[mapType]
 
   return (
     <MapContainer
@@ -57,11 +82,13 @@ export function MapView() {
       className="h-full w-full"
       style={{ background: '#1a1a1a' }}
     >
-      <TileLayer
-        key={mapType}
-        attribution={attribution}
-        url={tileUrl}
-      />
+      {layers.map((layer, index) => (
+        <TileLayer
+          key={`${mapType}-${index}`}
+          attribution={layer.attribution}
+          url={layer.url}
+        />
+      ))}
       
       <MapController />
       

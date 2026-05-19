@@ -2,14 +2,14 @@
 
 import { useApp } from '@/lib/context/app-context'
 import { Button } from '@/components/ui/button'
-import { Satellite, Map } from 'lucide-react'
+import { Layers, Map, Satellite } from 'lucide-react'
 
 export function MapTypeToggle() {
   const { mapType, setMapType } = useApp()
 
   return (
-    <div className="absolute right-4 top-4 z-[1000]">
-      <div className="flex rounded-lg border border-border bg-card shadow-lg overflow-hidden">
+    <div className="absolute left-4 bottom-4 z-[1000]">
+      <div className="flex overflow-hidden rounded-lg border border-border bg-background shadow-lg">
         <Button
           variant={mapType === 'satellite' ? 'default' : 'ghost'}
           size="sm"
@@ -26,7 +26,16 @@ export function MapTypeToggle() {
           onClick={() => setMapType('streets')}
         >
           <Map className="h-4 w-4" />
-          Карта
+          Схема
+        </Button>
+        <Button
+          variant={mapType === 'hybrid' ? 'default' : 'ghost'}
+          size="sm"
+          className="rounded-none gap-1.5"
+          onClick={() => setMapType('hybrid')}
+        >
+          <Layers className="h-4 w-4" />
+          Гибрид
         </Button>
       </div>
     </div>
