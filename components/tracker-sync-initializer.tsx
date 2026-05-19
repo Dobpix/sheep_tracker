@@ -4,15 +4,7 @@ import { useConnectionCheck } from '@/lib/hooks/use-connection-check'
 import { useTrackerSync } from '@/lib/hooks/use-tracker-sync'
 import { useZoneCheck } from '@/lib/hooks/use-zone-check'
 
-/**
- * Компонент инициализирует синхронизацию с трекерами животных
- * Включает:
- * - Синхронизацию позиций (SSE)
- * - Проверку потери связи
- * - Проверку выхода за пределы зон
- *
- * Должен быть размещен внутри AppProvider
- */
+
 export function TrackerSyncInitializer() {
 	// Инициализируем синхронизацию позиций
 	useTrackerSync()

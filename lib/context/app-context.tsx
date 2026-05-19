@@ -2,7 +2,7 @@
 
 import { MAP_CENTER, mockAnimals, mockNotifications, mockZones } from '@/lib/data/mock-data'
 import type { Animal, Coordinates, Notification, Zone } from '@/lib/types'
-import { createContext, ReactNode, useCallback, useContext, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 
 type MapType = 'satellite' | 'streets' | 'hybrid'
 
@@ -37,9 +37,40 @@ interface AppContextType extends AppState {
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-	const [animals, setAnimals] = useState<Animal[]>(mockAnimals)
-	const [zones, setZones] = useState<Zone[]>(mockZones)
-	const [notifications, setNotifications] = useState<Notification[]>(mockNotifications)
+	const STORAGE_KEYS = {
+		animals: 'sa:animals',
+		zones: 'sa:zones',
+		notifications: 'sa:notifications',
+	}
+
+	const loadFromStorage = <T,>(key: string, fallback: T): T => {
+		try {
+			if (typeof window === 'undefined') return fallback
+			const raw = localStorage.getItem(key)
+			if (!raw) return fallback
+			const parsed = JSON.parse(raw) as unknown as T
+			return parsed
+		} catch (e) {
+			console.error('Error loading from storage', key, e)
+			return fallback
+		}
+	}
+
+	const [animals, setAnimals] = useState<Animal[]>(() => {
+		const stored = loadFromStorage<Animal[]>(STORAGE_KEYS.animals, null as any)
+		if (stored && Array.isArray(stored)) {
+			return stored.map(a => ({ ...a, lastSeen: a.lastSeen ? new Date(a.lastSeen) : a.lastSeen }))
+		}
+		return mockAnimals
+	})
+	const [zones, setZones] = useState<Zone[]>(() => loadFromStorage<Zone[]>(STORAGE_KEYS.zones, mockZones))
+	const [notifications, setNotifications] = useState<Notification[]>(() => {
+		const stored = loadFromStorage<Notification[]>(STORAGE_KEYS.notifications, null as any)
+		if (stored && Array.isArray(stored)) {
+			return stored.map(n => ({ ...n, timestamp: n.timestamp ? new Date(n.timestamp) : n.timestamp }))
+		}
+		return mockNotifications
+	})
 	const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null)
 	const [isDrawingZone, setIsDrawingZone] = useState(false)
 	const [drawingCoordinates, setDrawingCoordinates] = useState<Coordinates[]>([])
@@ -47,7 +78,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 	const [mapType, setMapType] = useState<MapType>('satellite')
 
 	const addAnimal = useCallback((animal: Omit<Animal, 'id' | 'history' | 'lastSeen'>) => {
-		console.log('[v0] Adding animal:', animal)
 		const newAnimal: Animal = {
 			...animal,
 			id: `animal-${Date.now()}`,
@@ -55,7 +85,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 			lastSeen: new Date(),
 		}
 		setAnimals(prev => [...prev, newAnimal])
-		console.log('[v0] Animal added successfully:', newAnimal.id)
 		return newAnimal
 	}, [])
 
@@ -94,10 +123,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 	}, [])
 
 	const addDrawingPoint = useCallback((coord: Coordinates) => {
-		console.log('[v0] Adding drawing point:', coord)
 		setDrawingCoordinates(prev => {
 			const newCoords = [...prev, coord]
-			console.log('[v0] Drawing coordinates now:', newCoords.length)
 			return newCoords
 		})
 	}, [])
@@ -127,6 +154,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
 	const markNotificationRead = useCallback((id: string) => {
 		setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)))
 	}, [])
+
+	useEffect(() => {
+		try {
+			localStorage.setItem(STORAGE_KEYS.animals, JSON.stringify(animals))
+		} catch (e) {
+			console.error('Failed to save animals to storage', e)
+		}
+	}, [animals])
+
+	useEffect(() => {
+		try {
+			localStorage.setItem(STORAGE_KEYS.zones, JSON.stringify(zones))
+		} catch (e) {
+			console.error('Failed to save zones to storage', e)
+		}
+	}, [zones])
+
+	useEffect(() => {
+		try {
+			const serial = notifications.map(n => ({
+				...n,
+				timestamp: n.timestamp ? new Date(n.timestamp).toISOString() : n.timestamp,
+			}))
+			localStorage.setItem(STORAGE_KEYS.notifications, JSON.stringify(serial))
+		} catch (e) {
+			console.error('Failed to save notifications to storage', e)
+		}
+	}, [notifications])
 
 	const setMapCenterValue = useCallback((center: Coordinates) => {
 		setMapCenter(center)

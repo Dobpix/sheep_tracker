@@ -1,7 +1,8 @@
 import type { Animal, Notification, Zone } from '@/lib/types'
 
-// Центр пастбища - примерные координаты сельской местности
-const CENTER = { lat: 43.222, lng: 76.8512 }
+// Центр карты по умолчанию — Ульяновск
+// Координаты: 54.305, 48.375 (широта, долгота)
+const CENTER = { lat: 54.305, lng: 48.375 }
 
 export const mockAnimals: Animal[] = [
 	{
